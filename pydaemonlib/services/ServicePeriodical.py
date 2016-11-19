@@ -11,8 +11,8 @@ class ServicePeriodical(Service):
     __metaclass__ = ABCMeta
 
 
-    def __init__(self, config):
-        super(ServicePeriodical, self).__init__(config)
+    def __init__(self):
+        super(ServicePeriodical, self).__init__()
         self._timeout = None
 
 
@@ -23,10 +23,9 @@ class ServicePeriodical(Service):
 
         while True:
             try:
-                ok = self.handler()
-                if ok:
-                    sleep(self._timeout)
-            
+                self.handler()
+                sleep(self._timeout)
+
             except Exception:
                 logging.error(traceback.format_exc())
 

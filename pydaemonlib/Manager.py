@@ -3,7 +3,6 @@ import inspect
 from argparse import ArgumentParser
 
 from colorprint import tpl_red, tpl_green, tpl_empty
-from models.Config import Config
 from errors import ServiceError
 from services import Service
 
@@ -17,22 +16,12 @@ class Manager(object):
 
     def __get_args(self):
         parser = ArgumentParser()
-        
+
         parser.add_argument("command", help="command name", choices=['list', 'start', 'stop', 'restart'])
         parser.add_argument("-n", "--name", help="name of service")
-        parser.add_argument("-c", "--config", help="name of config")
         parser.add_argument("-a", "--all", help="all services", action="store_true")
 
         return parser.parse_args()
-
-
-    def __get_config(self, config_name):
-        if config_name is not None:
-            config_path = "local/%s.yaml" % config_name
-        else:
-            config_path = None
-
-        return Config(config_path)
 
 
     @staticmethod
@@ -72,7 +61,7 @@ class Manager(object):
     def __check_error(self, name):
         if os.path.exists('tmp/server/logs/%s' % name):
             return os.path.getsize('tmp/server/logs/%s/error.log' % name) > 0
-            
+
         else:
             return False
 
@@ -104,71 +93,65 @@ class Manager(object):
         """
             Start a specified service
         """
-        config = self.__get_config(args.config)
-
         if args.all:
             names = self.__get_stopped_services()
             for name in names:
-                self.__start_service(name, config)
+                self.__start_service(name)
 
         else:
             assert args.name is not None
-            self.__start_service(args.name, config)
+            self.__start_service(args.name)
 
 
     def __stop(self, args):
         """
             Stop a specified service
         """
-        config = self.__get_config(args.config)
-
         if args.all:
             names = self.__get_started_services()
             for name in names:
-                self.__stop_service(name, config)
+                self.__stop_service(name)
 
         else:
             assert args.name is not None
-            self.__stop_service(args.name, config)
+            self.__stop_service(args.name)
 
 
     def __restart(self, args):
         """
             Restart a specified service
         """
-        config = self.__get_config(args.config)
-
         if args.all:
             names = self.__get_started_services()
             for name in names:
-                self.__restart_service(name, config)
+                self.__restart_service(name)
 
         else:
             assert args.name is not None
-            self.__restart_service(args.name, config)
+            self.__restart_service(args.name)
 
 
-    def __start_service(self, name, config):
+    def __start_service(self, name):
         try:
-            service = Service.create(name, config)
+            service = Service.create(name)
             service.start()
 
         except ServiceError as exc:
             print exc
 
 
-    def __stop_service(self, name, config):
+    def __stop_service(self, name):
         try:
-            service = Service.create(name, config)
+            service = Service.create(name)
             service.stop()
 
         except ServiceError as exc:
             print exc
 
 
-    def __restart_service(self, name, config):
+    def __restart_service(self, name):
         try:
-            service = Service.create(name, config)
+            service = Service.create(name)
             service.restart()
 
         except ServiceError as exc:

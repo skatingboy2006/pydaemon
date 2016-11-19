@@ -1,2 +1,5 @@
 *~
 *.pyc
+
+tmp/pydaemon/*
+!tmp/pydaemon/.gitkeep

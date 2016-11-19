@@ -4,7 +4,7 @@ import logging
 from signal import SIGTERM
 from abc import ABCMeta, abstractmethod
 
-from errors import ServiceError
+from pydaemonlib.errors import ServiceError
 
 
 
@@ -12,13 +12,12 @@ class Service(object):
     __metaclass__ = ABCMeta
 
 
-    pid_path = 'tmp/server/pids'
+    pid_path = 'tmp/pydaemon'
 
 
-    def __init__(self, config):
+    def __init__(self):
         self._name = self.__class__.__name__
         self._pidfile = os.path.join(self.pid_path, '%s.pid' % self._name)
-        self._config = config
 
 
     @abstractmethod
@@ -27,7 +26,7 @@ class Service(object):
 
 
     @staticmethod
-    def create(name, config):
+    def create(name):
         module = __import__('pydaemonlib.services').services
 
         if name in dir(module):
@@ -35,7 +34,7 @@ class Service(object):
         else:
             raise ServiceError("Cannot find service '%s'" % name)
 
-        return service_cls(config)
+        return service_cls()
 
 
     @staticmethod
@@ -73,12 +72,6 @@ class Service(object):
         pid = self._daemonize()
 
         if pid == 0:
-            # set logger
-            init_logger(
-                self._config('service.loglevel'),
-                'tmp/server/logs/%s' % self._name
-            )
-
             # run the body of the daemon
             logging.info("Service %s started" % self._name)
             self.run()
