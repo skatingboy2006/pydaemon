@@ -12,7 +12,7 @@ class Service(object):
     __metaclass__ = ABCMeta
 
 
-    pid_path = 'tmp/pydaemon'
+    pid_path = 'tmp/pydaemon/pid'
 
 
     def __init__(self):
@@ -69,12 +69,22 @@ class Service(object):
                 raise ServiceError("Service is already started")
 
         # create and switch to daemon thread
-        pid = self._daemonize()
+        if sys.platform == "win32":
+            # write pid into pidfile
+            with open(self._pidfile, 'w') as f:
+                print >> f, os.getpid()
 
-        if pid == 0:
             # run the body of the daemon
             logging.info("Service %s started" % self._name)
             self.run()
+
+        else:
+            pid = self._daemonize()
+
+            if pid == 0:
+                # run the body of the daemon
+                logging.info("Service %s started" % self._name)
+                self.run()
 
 
     def stop(self):

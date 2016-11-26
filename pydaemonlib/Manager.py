@@ -1,8 +1,12 @@
 import os
+import sys
 import inspect
 from argparse import ArgumentParser
 
-from colorprint import tpl_red, tpl_green, tpl_empty
+if sys.platform == "win32":
+    import wmi
+
+from colorprint import red, green, empty
 from errors import ServiceError
 from services import Service
 
@@ -43,13 +47,26 @@ class Manager(object):
                 with open(os.path.join(Service.pid_path, name)) as f:
                     pid = f.read().strip()
 
-                if pid in os.listdir('/proc'): # checking started pid
+                if pid in self.__get_all_started_pids(): # checking started pid
                     started_services[service_name] = pid
                 else:
                     service = Service.create(service_name, None)
                     service.remove_pidfile()
 
         return started_services
+
+
+    def __get_all_started_pids(self):
+        if sys.platform == "win32":
+            c = wmi.WMI()
+            pids = [
+                str(p.ProcessId)
+                for p in c.Win32_Process()
+                if p.CommandLine and "pydaemon.py start" in p.CommandLine
+            ]
+            return pids
+        else:
+            return os.listdir('/proc')
 
 
     def __get_stopped_services(self):
@@ -83,9 +100,9 @@ class Manager(object):
 
             print template % (
                 service_name,
-                tpl_green.format('started') if service_name in started_services else tpl_empty.format('stopped'),
+                green('started') if service_name in started_services else empty('stopped'),
                 started_services[service_name] if service_name in started_services else '',
-                tpl_red.format('errors') if errors else tpl_green.format('ok')
+                red('errors') if errors else green('ok')
             )
 
 
