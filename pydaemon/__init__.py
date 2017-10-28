@@ -1,7 +1,12 @@
+import sys
 import os
 import re
 import importlib.util
 
+
+sys.path.append(
+    os.path.abspath('.')
+)
 
 SETTINGS_PATH = os.path.join(
     os.path.expanduser('~'),
