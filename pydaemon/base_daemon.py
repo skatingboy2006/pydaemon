@@ -1,3 +1,4 @@
+import sys
 import os
 import logging
 import traceback
@@ -21,7 +22,12 @@ class BaseDaemon:
 
     def start(self):
         if self._pid is None:
-            if os.fork() == 0:
+            if sys.platform == 'win32':
+                pid = 0
+            else:
+                pid = os.fork()
+                
+            if pid == 0:
                 self._set_pid()
                 logging.info("daemon started")
                 try:

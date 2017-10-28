@@ -1,6 +1,6 @@
 @echo off
 if "%1" == "start" (
-    start /MIN "" python pydaemon.py %*
+    start /MIN "" python pydaemon %*
 ) else (
-    python pydaemon.py %*
+    python pydaemon %*
 )
