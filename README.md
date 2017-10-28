@@ -15,7 +15,7 @@ Go into the downloaded directory and execute:
     
 ### 2. Creating a daemon
 
-Your daemons must be stored in the folder `daemons` in the root of your project. Each daemon should be implemented as a class inherited from `pydaemon.base_daemon.BaseDaemon` and stored in a separate file. There are some specialities regarding the names. The name of class must be in camel notation, and the appropriate file must have same name but in snale notation. For example, you are to develop a daemon called `hi_daemon`:
+Your daemons must be stored in the folder `daemons` in the root of your project. Each daemon should be implemented as a class inherited from `pydaemon.base_daemon.BaseDaemon` and stored in a separate file. There are some specialities regarding the names. The name of class must be in camel notation, and the appropriate file must have same name but in snake notation. For example, you are to develop a daemon called `hi_daemon`:
 
   1. In the folder `daemons` create a file `hi_daemon.py`
   2. Create the class `HiDaemon` inside the file:
