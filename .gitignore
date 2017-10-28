@@ -1,5 +1,7 @@
 *~
 *.pyc
+__pycache__
 
-tmp/pydaemon/*
-!tmp/pydaemon/.gitkeep
+build
+dist
+*.egg-info
