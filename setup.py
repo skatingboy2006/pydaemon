@@ -9,10 +9,11 @@ from distutils.core import setup
 from setuptools import find_packages
 
 
+scripts = ['bin/pydaemon-script.py']
 if sys.platform == 'win32':
-    scripts = ['bin/pydaemon-script.py', 'bin/pydaemon.cmd']
+    scripts.append('bin/pydaemon.cmd')
 else:
-    scripts = ['bin/pydaemon']
+    scripts.append('bin/pydaemon')
 
 setup(
     name='pydaemon',
