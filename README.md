@@ -62,7 +62,7 @@ Parsed config data is available inside the daemon class through `self._config`.
 
 ### 4. Logging
 
-With Pydaemon it is easy to manage your errors because it supports logging. Log information are being stored in:
+With Pydaemon it is easy to manage your errors because it supports logging. Log information is being stored in:
 
     ~/.pydaemon/<project_name>/logs/<daemon_name>/
     
